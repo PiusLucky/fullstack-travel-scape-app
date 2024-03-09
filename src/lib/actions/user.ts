@@ -60,7 +60,7 @@ export async function getUserById(userId: string) {
   try {
     await connectToDatabase();
 
-    const user = await User.findOne({ _id: userId });
+    const user = await User.findOne({ _id: userId }).select("-password");
 
     if (!user) throw new Error("User not found");
 
