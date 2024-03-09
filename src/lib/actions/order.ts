@@ -54,6 +54,48 @@ export async function getUserTotalOrderStats(userId: string) {
   }
 }
 
+export async function generateChart(userId: string) {
+  try {
+    await connectToDatabase();
+
+    const orders = await Order.find({ userId }).populate({
+      path: "packageId",
+      select: "per_person_price_in_credit",
+    });
+
+    const chartData = {};
+
+    // Initialize chartData with 0 for each month
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    months.forEach((month) => ((chartData as any)[month] = 0));
+
+    orders.forEach((order) => {
+      const createdAt = new Date(order.createdAt);
+      const month = createdAt.toLocaleString("default", { month: "short" });
+      const packagePrice = order.packageId.per_person_price_in_credit;
+
+      (chartData as any)[month] += packagePrice;
+    });
+
+    return chartData;
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 export async function createOrder(orderData: OrderData) {
   try {
     await connectToDatabase();
