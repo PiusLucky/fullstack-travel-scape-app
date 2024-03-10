@@ -3,6 +3,8 @@ import stripe from "stripe";
 import { createTransaction } from "@/lib/actions/transaction";
 import { updateCredits } from "@/lib/actions/user";
 
+// NOTE: more info here 
+// https://dashboard.stripe.com/test/webhooks
 export async function POST(request: Request) {
   const body = await request.text();
 
