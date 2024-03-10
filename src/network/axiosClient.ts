@@ -112,25 +112,17 @@ class ApiClient {
     }
   }
 
-  async post(
-    resource: string,
-    endpoint: string,
-    data: any,
-    setSuccess: any = null
-  ) {
+  async post(resource: string, endpoint: string, data: any, toaster?: any) {
+    console.log("🚀 ~ ApiClient ~ toaster:", toaster);
     try {
       const response = await this.axiosClient.post(
         `${this.baseUrl}${resource}${endpoint}`,
         data
       );
 
-      if (setSuccess) {
-        this.handleAxiosSuccess(response.data, setSuccess);
-      }
-
       return response.data;
     } catch (error) {
-      throw this.handleAxiosError(error as AxiosError);
+      throw this.handleAxiosError(error as AxiosError, toaster);
     }
   }
 
@@ -150,7 +142,20 @@ class ApiClient {
     }
   }
 
-  private handleAxiosError(error: AxiosError) {
+  private handleAxiosError(error: AxiosError, toaster?: any) {
+    if (toaster) {
+      toaster({
+        title: "Error",
+
+        description:
+          //@ts-ignore
+          error.response?.data?.response?.meta?.message ||
+          //@ts-ignore
+          error.response?.data?.response?.meta?.message,
+        className: "error-toast",
+      });
+    }
+
     if (
       //@ts-ignore
       error.response?.data?.response?.meta?.message === "jwt expired" ||
