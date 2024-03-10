@@ -1,6 +1,7 @@
 import { createOrder, getAllOrders } from "@/lib/actions/order";
 import { error_response, success_response, validateToken } from "@/lib/utils";
 import { CreateOrderInputValidation } from "@/lib/validations";
+import { OrderData } from "@/types";
 
 export async function POST(req: Request) {
   try {

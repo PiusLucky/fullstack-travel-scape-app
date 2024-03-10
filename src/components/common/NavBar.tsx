@@ -65,9 +65,9 @@ function NavBar() {
         {menu ? (
           <div className="my-8 select-none animate-in slide-in-from-right">
             <div className="flex flex-col gap-8 mt-8 mx-4">
-              <p className="text-black cursor-pointer">
+              <div className="text-black cursor-pointer">
                 <span>How it works</span>
-              </p>
+              </div>
               {/* Add more links here */}
 
               <div className="flex flex-col gap-[40px] select-none">

@@ -1,8 +1,15 @@
+"use server";
+
 import { connectToDatabase } from "../database/connection/mongoose";
 import { handleError } from "../utils";
 import Transaction from "../database/models/transaction.model";
 import Stripe from "stripe";
 import { redirect } from "next/navigation";
+import {
+  CheckoutTransactionParams,
+  CreateTransactionData,
+  UpdateTransactionData,
+} from "@/types";
 
 export async function createTransaction(
   transactionData: CreateTransactionData
@@ -22,7 +29,7 @@ export async function getAllTransactions(userId: string) {
   try {
     await connectToDatabase();
 
-    const transactions = await Transaction.find({ userId });
+    const transactions = await Transaction.find({ userId }).sort("-createdAt");;
 
     return JSON.parse(JSON.stringify(transactions));
   } catch (error) {
@@ -113,11 +120,12 @@ export async function checkoutCredits(transaction: CheckoutTransactionParams) {
     metadata: {
       plan: "TOP_UP",
       credits: amount,
+      price: transaction.amount,
       userId: transaction.userId,
     },
     mode: "payment",
-    success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/`,
-    cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/`,
+    success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/dashboard`,
+    cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/dashboard`,
   });
 
   redirect(session.url!);

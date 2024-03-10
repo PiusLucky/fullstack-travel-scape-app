@@ -1,3 +1,6 @@
+"use server";
+
+import { PackageData } from "@/types";
 import { connectToDatabase } from "../database/connection/mongoose";
 import Package from "../database/models/packages.model";
 import { handleError } from "../utils";
@@ -7,7 +10,7 @@ export async function getAllPackages() {
   try {
     await connectToDatabase();
 
-    const packages = await Package.find();
+    const packages = await Package.find().sort("-createdAt");
 
     return JSON.parse(JSON.stringify(packages));
   } catch (error) {

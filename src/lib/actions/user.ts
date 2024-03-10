@@ -7,6 +7,7 @@ import { handleError } from "../utils";
 import User from "../database/models/users.model";
 import jwt from "jsonwebtoken";
 import bcrypt, { hash } from "bcrypt";
+import { CreateUserParams, UpdateUserParams } from "@/types";
 
 export async function createUser(user: CreateUserParams) {
   try {

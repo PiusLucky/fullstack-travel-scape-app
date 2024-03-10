@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import { ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import clsx from "clsx";
 
 interface IValidatedToken {
   userId: number;
@@ -82,3 +85,11 @@ export const validateToken = async (
     throw new Error((err as any)?.message);
   }
 };
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+export function ellipsify(str: string, length: number = 15): string {
+  return str.length > length ? str.slice(0, length) + "..." : str;
+}

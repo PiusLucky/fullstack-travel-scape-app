@@ -1,3 +1,6 @@
+"use server";
+
+import { OrderData } from "@/types";
 import { connectToDatabase } from "../database/connection/mongoose";
 import Order from "../database/models/orders.model";
 import { handleError } from "../utils";
@@ -11,7 +14,9 @@ export async function getAllOrders(userId: string) {
 
     const orders = await Order.find({
       userId,
-    });
+    })
+      .populate(["userId", "packageId"])
+      .sort("-createdAt");
 
     return JSON.parse(JSON.stringify(orders));
   } catch (error) {

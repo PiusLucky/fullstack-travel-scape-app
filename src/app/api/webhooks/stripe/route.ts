@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import stripe from "stripe";
 import { createTransaction } from "@/lib/actions/transaction";
+import { updateCredits } from "@/lib/actions/user";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -21,23 +22,16 @@ export async function POST(request: Request) {
 
   // CREATE
   if (eventType === "checkout.session.completed") {
-    const { id, amount_total, metadata } = event.data.object;
+    const { metadata } = event.data.object;
 
     const transaction = {
-      // stripeId: id,
-      // amount: amount_total ? amount_total / 100 : 0,
-      // plan: metadata?.plan || "",
-      // credits: Number(metadata?.credits) || 0,
-      // buyerId: metadata?.buyerId || "",
-      // createdAt: new Date(),
-
       userId: metadata?.userId,
       source: "CREDIT" as "CREDIT",
       source_id: "N/A",
-      amount: Number(metadata?.credits) || 0,
+      amount: Number(metadata?.price) || 0,
       status: "SUCCESS" as "SUCCESS",
     };
-
+    await updateCredits(metadata?.userId as string, Number(metadata?.price));
     const newTransaction = await createTransaction(transaction);
 
     return NextResponse.json({ message: "OK", transaction: newTransaction });
